@@ -30,7 +30,8 @@ document.addEventListener('copy', function (event) {
         if (!text) return;
 
         const cleaned = cleanCopiedText(text);
-
+        console.log('Copied text:', text);
+        console.log(cleaned)
         // Override clipboard content
         event.preventDefault();
         event.clipboardData.setData('text/plain', cleaned);
