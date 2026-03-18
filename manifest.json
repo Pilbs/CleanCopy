@@ -1,0 +1,14 @@
+{
+  "manifest_version": 3,
+  "name": "CleanCopy",
+  "version": "1.0",
+  "description": "Cleans copied text from any webpage.",
+  "permissions": [],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}
