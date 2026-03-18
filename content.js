@@ -1,39 +1,46 @@
+let isEnabled = true; // default
+
+// Load initial state
+chrome.storage.local.get(['enabled'], (result) => {
+    isEnabled = result.enabled !== false;
+});
+
+// Listen for changes (keeps it in sync with popup)
+chrome.storage.onChanged.addListener((changes) => {
+    if (changes.enabled) {
+        isEnabled = changes.enabled.newValue;
+    }
+});
+
 function cleanCopiedText(text) {
     if (!text) return '';
 
     return text
-        // Remove invisible / non-printable characters (except line breaks and tabs)
-        .replace(/[\u200B-\u200D\uFEFF]/g, '')   // zero-width spaces, BOM
-        .replace(/\u00A0/g, ' ')                // non-breaking spaces → normal space
-
-        // Normalise whitespace
-        .replace(/[ \t]+/g, ' ')                // collapse multiple spaces/tabs
-        .replace(/\n{2,}/g, '\n')               // collapse multiple line breaks
-
-        // Trim each line (optional but useful)
+        .replace(/[\u200B-\u200D\uFEFF]/g, '')
+        .replace(/\u00A0/g, ' ')
+        .replace(/[ \t]+/g, ' ')
+        .replace(/\n{2,}/g, '\n')
         .split('\n')
         .map(line => line.trim())
         .join('\n')
-
-        // Final trim
         .trim();
 }
 
 document.addEventListener('copy', function (event) {
-    chrome.storage.local.get(['enabled'], (result) => {
-        const isEnabled = result.enabled !== false; // default = true
-        if (!isEnabled) return;
-        const selection = window.getSelection();
-        if (!selection) return;
+    if (!isEnabled) return;
 
-        const text = selection.toString();
-        if (!text) return;
+    const selection = window.getSelection();
+    if (!selection || selection.isCollapsed) return;
 
-        const cleaned = cleanCopiedText(text);
-        console.log('Copied text:', text);
-        console.log(cleaned)
-        // Override clipboard content
-        event.preventDefault();
-        event.clipboardData.setData('text/plain', cleaned);
-    });
+    const text = selection.toString();
+    if (!text) return;
+
+    const cleaned = cleanCopiedText(text);
+
+    // MUST be synchronous
+    event.preventDefault();
+    event.clipboardData.setData('text/plain', cleaned);
+
+    console.log('Original:', text);
+    console.log('Cleaned:', cleaned);
 });
