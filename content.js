@@ -20,15 +20,19 @@ function cleanCopiedText(text) {
 }
 
 document.addEventListener('copy', function (event) {
-    const selection = window.getSelection();
-    if (!selection) return;
+    chrome.storage.local.get(['enabled'], (result) => {
+        const isEnabled = result.enabled !== false; // default = true
+        if (!isEnabled) return;
+        const selection = window.getSelection();
+        if (!selection) return;
 
-    const text = selection.toString();
-    if (!text) return;
+        const text = selection.toString();
+        if (!text) return;
 
-    const cleaned = cleanCopiedText(text);
+        const cleaned = cleanCopiedText(text);
 
-    // Override clipboard content
-    event.preventDefault();
-    event.clipboardData.setData('text/plain', cleaned);
+        // Override clipboard content
+        event.preventDefault();
+        event.clipboardData.setData('text/plain', cleaned);
+    });
 });

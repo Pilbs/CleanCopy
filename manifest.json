@@ -3,7 +3,10 @@
   "name": "CleanCopy",
   "version": "1.0",
   "description": "Cleans copied text from any webpage.",
-  "permissions": [],
+  "permissions": ["storage"],
+  "action": {
+    "default_popup": "popup.html"
+  },
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
