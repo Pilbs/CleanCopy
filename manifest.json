@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "CleanCopy",
   "version": "1.0",
-  "description": "Cleans copied text from any webpage.",
+  "description": "Automatically cleans copied text by removing formatting, extra spaces, and invisible characters.",
   "permissions": ["storage"],
   "action": {
     "default_popup": "popup.html"
